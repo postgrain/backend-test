@@ -16,7 +16,7 @@ A api será responsável pela criação de lembretes, listagem dos lembrentes, r
 - Listagem de lembretes
   - Deve ser possível listar os lembretes que estão pendentes em um perído.
   - Deve ser possível listar os lembretes resolvidos de um período.
-- O app deve notificar um usuário que ele tem um compromisso na data do lembrete, caso ele não tenha sido marcado como resolvido. (preocupe-se apenas com o dia do lembrete e envie o lembrete às 8h).
+- O app deve notificar um usuário que ele tem um compromisso na data do lembrete , caso ele não tenha sido marcado como resolvido. A notificacao deve ocorrer sempre as 8 horas da manha (padrao), preocupe-se apenas com o dia do lembrete.
   - ps: basta escrever num arquivo de log. Sugestão de formato: `<data lembrete>: <username> <título lembrete> <descrição lembrete>`
 - Deve ser possível apagar um lembrete. Lembretes apagados devem:
   - continuar sendo listado em períodos anteriores à data em que foi apagado
