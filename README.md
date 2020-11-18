@@ -7,7 +7,7 @@ Estamos precisando da sua ajuda para construir a API do app lembretes. Sua taref
 A api será responsável pela criação de lembretes, listagem dos lembrentes, resolver um lembrete de um período, apagar um lembrete e notificar um usuário de um compromisso no dia de vencimento.
 
 ## Requisitos
-- Deve ser possível criar um lembrete em qualquer data, passado, presente ou futuro.
+- Deve ser possível criar um lembrete para qualquer data, passado, presente ou futuro.
 - O lembrete deve ter um título, descrição e nome do usuário <username>
 - O lembrete deve ter a períodicidade em que ele acontece; (Preocupe-se apenas em compromissos mensais ou não recorrentes).
   - exemplo: compromissos podem acontecer mensalamente todo dia 5, ou apenas uma vez no dia 14/10/21.
