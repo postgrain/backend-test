@@ -9,7 +9,8 @@ A api será responsável pela criação de lembretes, listagem dos lembrentes, r
 ## Requisitos
 - Deve ser possível criar um lembrete para qualquer data, passado, presente ou futuro. (Não deve ser informado a hora do lembrete)
 - O lembrete deve ter um título, descrição e nome do usuário <username>
-- O lembrete deve ter a períodicidade em que ele acontece; (Preocupe-se apenas em compromissos mensais ou não recorrentes).
+- O lembrete deve ter a períodicidade em que ele acontece; 
+  - Lembretes recorrentes podem ser configurados para qualquer período: segundo, minuto, hora, dia, semana, mês, ano, ou customizado. Mas para esse teste preocupe-se apenas em **recorrência mensal** ou lembrete **não recorrente**).
   - exemplo: compromissos podem acontecer mensalamente todo dia 5, ou apenas uma vez no dia 14/10/21.
 - Deve ser possível informar que um lembrete de um determinado período foi resolvido.
 - Listagem de lembretes
