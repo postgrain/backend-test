@@ -25,7 +25,7 @@ A api será responsável pela criação de lembretes, listagem dos lembrentes, r
 ## Requisitos não funcionais
 Espera-se que um grande número de usuários utilize o app. Assim, se preocupe em fazer uma api confiável e resiliente.
 
-## Cuidado no overengenieering
+## Cuidado no Overengineering
 Não esperamos que você desenvolva nada além do que foi solicitado. Não desenvolva nenhuma solução de autenticação, registro de usuários, envio de emails ou qualquer outra coisa.
 
 Crie uma solução simples, que seja fácil de ler, manter e adicionar funcionalidades.
