@@ -30,3 +30,12 @@ Espera-se que um grande número de usuários utilize o app. Assim, se preocupe e
 Não esperamos que você desenvolva nada além do que foi solicitado. Não desenvolva nenhuma solução de autenticação, registro de usuários, envio de emails ou qualquer outra coisa.
 
 Crie uma solução simples, que seja fácil de ler, manter e adicionar funcionalidades.
+  
+  
+--------
+**Nosso objetivo é responder as seguintes perguntas:**
+
+Você entende a linguagem PHP e o framework Laravel, e o ambiente de tecnologias web em geral?
+Você é capaz de criar códigos limpos, que são fáceis de ler e alterar?
+Você consegue escrever testes automatizado?
+Qual seu nível de criação de abstrações?
