@@ -33,11 +33,13 @@ Oferecemos `15%` de desconto para carrinhos a partir de `R$3000,00`.
 A cada duas unidades compradas de certos produtos, a terceira unidade será gratuita, ou seja leve 3, pague 2.
 Isso vale para múltiplos também. Levando 9 unidades por exemplo, o cliente pagará somente 6 unidades.
 Os produtos que participam dessa promoção podem ser consultados através da config [api.php](config/api.php).
+
 **3. Desconto de porcentagem no item mais barato de uma mesma categoria**
 
 Ao comprar dois ou mais produtos **diferentes** de uma determinada categoria,
 somente uma unidade do produto mais barato dessa categoria deve receber `40%` de desconto.
 As categorias determinadas podem ser consultadas através da config [api.php](config/api.php).
+
 **4. Desconto de porcentagem para colaboradores**
 
 Um usuário que seja colaborador tem `20%` de desconto no total do carrinho.
