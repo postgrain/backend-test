@@ -138,7 +138,7 @@ Sua tarefa consiste em:
 - Escrever testes unitários para cobrir o código novo criado por você.
 - Se julgar necessário, escrever mais testes funcionais para cobrir casos não previstos.
 - Escrever mensagens de _commit_ claras e e concisas.
-- Seguir os padrões [PSR-2](https://www.php-fig.org/psr/psr-2/) e passar nos _checks_ do CI.
+- Seguir os padrões [PSR-12](https://www.php-fig.org/psr/psr-12/) e passar nos _checks_ do CI.
 
 Lembre-se de que o código que fornecemos é apenas uma base e você poderá alterá-lo como julgar necessário.
 
