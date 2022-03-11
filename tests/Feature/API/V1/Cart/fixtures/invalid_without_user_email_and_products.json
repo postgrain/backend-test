@@ -1,0 +1,19 @@
+{
+    "request": {
+        "body": []
+    },
+    "response": {
+        "statusCode": 422,
+        "body": {
+            "message": "The user email field is required. (and 1 more error)",
+            "errors": {
+                "userEmail": [
+                    "The user email field is required."
+                ],
+                "products": [
+                    "The products field is required."
+                ]
+            }
+        }
+    }
+}
