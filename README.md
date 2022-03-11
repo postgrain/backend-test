@@ -103,7 +103,7 @@ A partir daí, é com você :sunglasses:
 
 ---
 
-Caso deseje rodar todas as checagens de qualidade de código que rodam no [CI](.gitlab-ci.yml), rode o comando abaixo:
+Caso deseje rodar todas as checagens de qualidade de código que rodam no [CI](.github/workflows/laravel.yml), rode o comando abaixo:
 
 ```bash
 ./vendor/bin/grumphp run
@@ -117,6 +117,14 @@ Para ativar essas checagens automaticamente a cada commit, utilize o `git:init` 
 
 Para checar em detalhes a cobertura de código da aplicação, após rodar o _grumphp_,
 abra o arquivo `build/coverage/index.html` em seu navegador.
+
+## Hooks (Opcional)
+
+Há dois hooks, configurados para os commits/pushes, que executarão verificações nos testes e formatação do código. Caso queira que sejam executados no seus commits e pushes rode o seguinte comando:
+
+```bash
+npm install
+```
 
 ## O que estamos procurando
 
