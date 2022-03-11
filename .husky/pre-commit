@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+php ./vendor/bin/phpcs
+php ./vendor/bin/phpstan analyse --no-progress
+php ./vendor/bin/phpunit

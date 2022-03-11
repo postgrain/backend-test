@@ -1,0 +1,7 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+php ./vendor/bin/phpstan analyse --no-progress
+php ./vendor/bin/grumphp run --tasks=yamllint
+php ./vendor/bin/phpunit -c phpunit.xml.dist
+php ./vendor/bin/grumphp run --tasks=clover_coverage
