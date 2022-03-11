@@ -7,3 +7,5 @@ parameters:
         - public
         - routes
         - tests
+    excludePaths:
+        - config
