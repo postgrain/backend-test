@@ -53,7 +53,7 @@ class DiscountMethods
     /**
      * Get the bigger discount from all applicable discounts
      *
-     * @return array{applicable: bool, totalDiscount: numeric-string, strategy: string}
+     * @return array{applicable: bool, totalDiscount: string, strategy: string}
      */
     public function bigger(): array
     {
@@ -85,9 +85,17 @@ class DiscountMethods
             $columns = array_column($applicableMethods, 'totalDiscount');
             array_multisort($columns, SORT_DESC, $applicableMethods);
 
-            //Change the response discount
+            //Select the bigger applicable discount
             $biggerDiscount = $applicableMethods[0];
             $response = $biggerDiscount;
+
+            //Removes unnecessary float last digit and makes it fixed in BRL.
+            $totalDiscountAmount = $response['totalDiscount'];
+            $split = explode('.', $totalDiscountAmount);
+            $qntLastDigits = strlen(end($split));
+            if ($qntLastDigits > 2) {
+                $response['totalDiscount'] = substr($totalDiscountAmount, 0, -1);
+            }
         }
 
         return $response;
@@ -97,7 +105,7 @@ class DiscountMethods
      * Consists in 25.00BRL discount for new users that has minimum 50.00BRL+ on products
      * in cart.
      *
-     * @return array{applicable: bool, totalDiscount: numeric-string, strategy: string}
+     * @return array{applicable: bool, totalDiscount: string, strategy: string}
      */
     private function newUser(): array
     {
@@ -122,7 +130,7 @@ class DiscountMethods
     /**
      * Consists in a 20% discount for users that are employees.
      *
-     * @return array{applicable: bool, totalDiscount: numeric-string, strategy: string}
+     * @return array{applicable: bool, totalDiscount: string, strategy: string}
      */
     private function employee(): array
     {
@@ -131,7 +139,7 @@ class DiscountMethods
         $discountPercentage = 20;
         $response = [
             'applicable' => false,
-            'totalDiscount' => '0',
+            'totalDiscount' => '00.00',
             'strategy' => 'employee',
         ];
 
@@ -142,8 +150,14 @@ class DiscountMethods
             $isUserEmployee = $userData['isEmployee'];
             if ($isUserEmployee) {
                 $totalDiscount = (float) $subtotalAmount * ($discountPercentage / 100);
+                $formatted = number_format(
+                    floor($totalDiscount * 100) / 100,
+                    2,
+                    '.',
+                    ''
+                );
                 $response['applicable'] = true;
-                $response['totalDiscount'] = (string) $totalDiscount;
+                $response['totalDiscount'] = $formatted;
             }
         }
 
@@ -153,7 +167,7 @@ class DiscountMethods
     /**
      * Consists in a 15% discount on carts with 3000BRL+
      *
-     * @return array{applicable: bool, totalDiscount: numeric-string, strategy: string}
+     * @return array{applicable: bool, totalDiscount: string, strategy: string}
      */
     private function aboveThreeThousand(): array
     {
@@ -162,7 +176,7 @@ class DiscountMethods
         $discountPercentage = 15;
         $response = [
             'applicable' => false,
-            'totalDiscount' => '0',
+            'totalDiscount' => '00.00',
             'strategy' => 'above-3000',
         ];
 
@@ -170,8 +184,14 @@ class DiscountMethods
         // according to the discount percentage.
         if ($subtotalAmount >= $minimumAmount) {
             $discountAmount = (float) $subtotalAmount * ($discountPercentage / 100);
+            $formatted = number_format(
+                floor($discountAmount * 100) / 100,
+                2,
+                '.',
+                ''
+            );
             $response['applicable'] = true;
-            $response['totalDiscount'] = (string) $discountAmount;
+            $response['totalDiscount'] = $formatted;
         }
 
         return $response;
@@ -183,7 +203,7 @@ class DiscountMethods
      * e.g: If the user pick two that are in promotion
      * the third will be free.
      *
-     * @return array{applicable: bool, totalDiscount: numeric-string, strategy: string}
+     * @return array{applicable: bool, totalDiscount: string, strategy: string}
      */
     private function takeThreePayTwo(): array
     {
@@ -192,7 +212,7 @@ class DiscountMethods
         $totalDiscount = '0';
         $response = [
             'applicable' => false,
-            'totalDiscount' => '0',
+            'totalDiscount' => '00.00',
             'strategy' => 'take-3-pay-2',
         ];
 
@@ -218,8 +238,14 @@ class DiscountMethods
         }
 
         if ($totalDiscount) {
+            $formatted = number_format(
+                floor($totalDiscount * 100) / 100,
+                2,
+                '.',
+                ''
+            );
             $response['applicable'] = true;
-            $response['totalDiscount'] = (string) $totalDiscount;
+            $response['totalDiscount'] = $formatted;
         }
 
         return $response;
@@ -229,7 +255,7 @@ class DiscountMethods
      * Consists in a 40% discount on a unit of the cheapest product
      * in the cart that has two products of the same category.
      *
-     * @return array{applicable: bool, totalDiscount: numeric-string, strategy: string}
+     * @return array{applicable: bool, totalDiscount: string, strategy: string}
      */
     private function sameCategory(): array
     {
@@ -239,7 +265,7 @@ class DiscountMethods
         $discountPercentage = 40;
         $response = [
             'applicable' => false,
-            'totalDiscount' => '0',
+            'totalDiscount' => '00.00',
             'strategy' => 'same-category',
         ];
 
@@ -273,9 +299,16 @@ class DiscountMethods
             }
         }
 
-        if ($totalDiscount) {
+
+        if ('0' !== $totalDiscount) {
+            $formatted = number_format(
+                floor($totalDiscount * 100) / 100,
+                2,
+                '.',
+                ''
+            );
             $response['applicable'] = true;
-            $response['totalDiscount'] = (string) $totalDiscount;
+            $response['totalDiscount'] = $formatted;
         }
 
         return $response;

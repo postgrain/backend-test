@@ -43,7 +43,7 @@ class CartsController extends Controller
         $totalDiscount = Money::BRL(0);
         $discountMethods = new DiscountMethods($userEmail, $products, $subtotal, $moneyFormatter);
         $biggerDiscount = $discountMethods->bigger();
-        $discountAmount = $moneyParser->parse((string) $biggerDiscount['totalDiscount'], $this->currency);
+        $discountAmount = $moneyParser->parse($biggerDiscount['totalDiscount'], $this->currency);
         $totalDiscount = $totalDiscount->add($discountAmount);
 
         $total = $subtotal->subtract($totalDiscount);
