@@ -55,8 +55,10 @@ class UsersController extends Controller
         $handleRequest = app()->handle($request);
 
         $statusCode = $handleRequest->getStatusCode();
+
         /** @var string $response */
         $response = $handleRequest->getContent();
+
         /** @var array{message: string, data: array<string, bool>} $parsedResponse */
         $parsedResponse = json_decode($response, true);
 

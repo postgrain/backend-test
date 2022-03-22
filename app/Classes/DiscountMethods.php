@@ -88,14 +88,6 @@ class DiscountMethods
             //Select the bigger applicable discount
             $biggerDiscount = $applicableMethods[0];
             $response = $biggerDiscount;
-
-            //Removes unnecessary float last digit and makes it fixed in BRL.
-            $totalDiscountAmount = $response['totalDiscount'];
-            $split = explode('.', $totalDiscountAmount);
-            $qntLastDigits = strlen(end($split));
-            if ($qntLastDigits > 2) {
-                $response['totalDiscount'] = substr($totalDiscountAmount, 0, -1);
-            }
         }
 
         return $response;
@@ -150,14 +142,14 @@ class DiscountMethods
             $isUserEmployee = $userData['isEmployee'];
             if ($isUserEmployee) {
                 $totalDiscount = (float) $subtotalAmount * ($discountPercentage / 100);
-                $formatted = number_format(
+                $formattedDiscount = number_format(
                     floor($totalDiscount * 100) / 100,
                     2,
                     '.',
                     ''
                 );
                 $response['applicable'] = true;
-                $response['totalDiscount'] = $formatted;
+                $response['totalDiscount'] = $formattedDiscount;
             }
         }
 
@@ -184,14 +176,14 @@ class DiscountMethods
         // according to the discount percentage.
         if ($subtotalAmount >= $minimumAmount) {
             $discountAmount = (float) $subtotalAmount * ($discountPercentage / 100);
-            $formatted = number_format(
+            $formattedDiscount = number_format(
                 floor($discountAmount * 100) / 100,
                 2,
                 '.',
                 ''
             );
             $response['applicable'] = true;
-            $response['totalDiscount'] = $formatted;
+            $response['totalDiscount'] = $formattedDiscount;
         }
 
         return $response;
@@ -238,14 +230,14 @@ class DiscountMethods
         }
 
         if ($totalDiscount) {
-            $formatted = number_format(
+            $formattedDiscount = number_format(
                 floor($totalDiscount * 100) / 100,
                 2,
                 '.',
                 ''
             );
             $response['applicable'] = true;
-            $response['totalDiscount'] = $formatted;
+            $response['totalDiscount'] = $formattedDiscount;
         }
 
         return $response;
@@ -301,14 +293,14 @@ class DiscountMethods
 
 
         if ('0' !== $totalDiscount) {
-            $formatted = number_format(
+            $formattedDiscount = number_format(
                 floor($totalDiscount * 100) / 100,
                 2,
                 '.',
                 ''
             );
             $response['applicable'] = true;
-            $response['totalDiscount'] = $formatted;
+            $response['totalDiscount'] = $formattedDiscount;
         }
 
         return $response;
