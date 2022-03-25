@@ -13,41 +13,26 @@ class UsersControllerTest extends TestCase
      */
     public function testShouldGetUserExternalInformation(): void
     {
-        //Set
-        $apiURL = 'http://localhost:8000/api/v1/user/';
         $userEmail = 'boitata@boitata.com';
-        $request = Request::create($apiURL . $userEmail);
-
-        //Act
-        //Dispatch the created request.
+        $request = Request::create('http://localhost:8000/api/v1/user/' . $userEmail);
         $handleRequest = app()->handle($request);
 
         $statusCode = $handleRequest->getStatusCode();
+
         /** @var string $response */
         $response = $handleRequest->getContent();
+
         /** @var array{message: string, data: array<string, bool>} $parsedResponse */
         $parsedResponse = json_decode($response, true);
 
-        if (200 === $statusCode) {
-            $response =
-                [
-                    'message' => $parsedResponse['message'],
-                    'data' => $parsedResponse['data'],
-                ];
-        } else {
-            $response = 404 === $statusCode
-                ? ['message' => 'Not Found.', 'data' => ['email' => $userEmail, 'isEmployee' => false]]
-                : ['message' => 'Internal server error.', 'data' => ['email' => $userEmail, 'isEmployee' => false]];
-        }
-
-
-        //Assertions
-        $this->assertEquals([
+        $expected = [
             'message' => 'Success.',
             'data' => [
-                'email' => $userEmail,
+                'email' => 'boitata@boitata.com',
                 'isEmployee' => true,
             ],
-        ], $response);
+        ];
+        $this->assertEquals($expected, $parsedResponse);
+        $this->assertIsInt($statusCode);
     }
 }

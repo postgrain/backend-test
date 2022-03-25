@@ -10,6 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UsersController extends Controller
 {
+    public const USER_NOT_FOUND_MESSAGE = 'Not Found.';
+    public const SUCCESS_MESSAGE = 'Success.';
+    public const INTERNAL_ERROR_MESSAGE = 'Internal server error.';
+    public const EXTERNAL_API_URL = 'http://localhost:8000/api/v1/user/';
+
     /**
      * @throws ValidationException
      */
@@ -24,11 +29,11 @@ class UsersController extends Controller
         /** @var array<string, bool> $employees */
         $employees = config('api.employees');
 
-        abort_if(!array_key_exists($email, $employees), 404, 'Not Found.');
+        abort_if(!array_key_exists($email, $employees), 404, self::USER_NOT_FOUND_MESSAGE);
 
         return new JsonResponse(
             [
-                'message' => 'Success.',
+                'message' => self::SUCCESS_MESSAGE,
                 'data' => [
                     'email' => $email,
                     'isEmployee' => $employees[$email],
@@ -46,12 +51,7 @@ class UsersController extends Controller
      */
     public function getExternalInformation(string $userEmail): array
     {
-        $apiURL = 'http://localhost:8000/api/v1/user/';
-
-        //Creates a new request.
-        $request = Request::create($apiURL . $userEmail);
-
-        //Dispatch the created request.
+        $request = Request::create(self::EXTERNAL_API_URL . $userEmail);
         $handleRequest = app()->handle($request);
 
         $statusCode = $handleRequest->getStatusCode();
@@ -62,18 +62,25 @@ class UsersController extends Controller
         /** @var array{message: string, data: array<string, bool>} $parsedResponse */
         $parsedResponse = json_decode($response, true);
 
-        if (200 === $statusCode) {
-            $response =
-                [
-                    'message' => $parsedResponse['message'],
-                    'data' => $parsedResponse['data'],
-                ];
-        } else {
-            $response = 404 === $statusCode
-                ? ['message' => 'Not Found.', 'data' => ['email' => $userEmail, 'isEmployee' => false]]
-                : ['message' => 'Internal server error.', 'data' => ['email' => $userEmail, 'isEmployee' => false]];
-        }
-
-        return $response;
+        return match ($statusCode) {
+            200 => [
+                'message' => self::SUCCESS_MESSAGE,
+                'data' => $parsedResponse['data'],
+            ],
+            404 => [
+                'message' => self::USER_NOT_FOUND_MESSAGE,
+                'data' => [
+                    'email' => $userEmail,
+                    'isEmployee' => false,
+                ],
+            ],
+            default => [
+                'message' => self::INTERNAL_ERROR_MESSAGE,
+                'data' => [
+                    'email' => $userEmail,
+                    'isEmployee' => false,
+                ],
+            ],
+        };
     }
 }
