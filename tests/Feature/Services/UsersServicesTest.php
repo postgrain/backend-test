@@ -11,7 +11,7 @@ class UsersServicesTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testShouldBeNewUser()
+    public function testShouldBeNewUser(): void
     {
         //Set
         $userEmail = 'runForestRun@gmail.com';
@@ -31,7 +31,7 @@ class UsersServicesTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testShouldBeEmployeeUser()
+    public function testShouldBeEmployeeUser(): void
     {
         $userEmail = 'boitata@boitata.com';
         $userServices = new UsersServices();
@@ -54,7 +54,7 @@ class UsersServicesTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testShouldGetUserInfo()
+    public function testShouldGetUserInfo(): void
     {
         //Set
         $usersServices = new UsersServices();

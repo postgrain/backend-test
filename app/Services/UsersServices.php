@@ -54,7 +54,8 @@ class UsersServices extends UsersController
      *
      * @param string $userEmail
      *
-     * @return array{message: string, data: array<string, bool>
+     * @return array{message: string, data: array<string, bool | string>}
+     *
      * @throws Exception
      */
     public function getInfo(string $userEmail): array

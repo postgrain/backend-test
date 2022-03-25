@@ -36,7 +36,7 @@ class CartsController extends Controller
     public function calculateDiscount(
         CartDiscountRequest $request,
     ): JsonResponse {
-        /** @var array<int, array{id: int, categoryId: string, quantity: int, unitPrice: numeric-string}> $products */
+        /** @var array<int, array{id: string, categoryId: string, quantity: int, unitPrice: numeric-string}> $products */
         $products = $request->get('products');
 
         /** @var string $userEmail */
@@ -47,8 +47,8 @@ class CartsController extends Controller
         $totalDiscount = Money::BRL(0);
         $availableDiscounts = $this->discountService->available($userEmail, $products, $subtotal);
         $biggerDiscount = $this->discountService->determineBigger($availableDiscounts);
-        $formattedDiscount = $this->discountService->formatDiscountValue($biggerDiscount['totalDiscount']);
-        $discountAmount = $this->moneyParser->parse($formattedDiscount, $this->currency);
+        $formattedDiscount = $this->discountService->formatDiscountValue((float) $biggerDiscount['totalDiscount']);
+        $discountAmount = $this->moneyParser->parse((string) $formattedDiscount, $this->currency);
         $totalDiscount = $totalDiscount->add($discountAmount);
 
         $total = $subtotal->subtract($totalDiscount);
@@ -70,7 +70,7 @@ class CartsController extends Controller
     /**
      * Calculates the subtotal on the cart.
      *
-     * @param array $products
+     * @param array<int, array{id: string, categoryId: string, quantity: int, unitPrice: numeric-string}> $products
      *
      * @return Money
      */

@@ -3,9 +3,9 @@
 namespace App\Calculations;
 
 use App\Services\UsersServices;
-use Exception;
 use Money\Money;
 use Money\MoneyFormatter;
+use Exception;
 
 class DiscountStrategies
 {
@@ -25,7 +25,7 @@ class DiscountStrategies
      * @param string $userEmail
      * @param Money  $subtotal
      *
-     * @return array{applicable: bool, totalDiscount: string, strategy: string} | false
+     * @return array{applicable: bool, totalDiscount: float, strategy: string} | false
      *
      * @throws Exception
      */
@@ -39,7 +39,7 @@ class DiscountStrategies
         if ($isNewUser && (float) $subtotalAmount > (float) $minSubtotalAmount) {
             return [
                 'applicable' => true,
-                'totalDiscount' => $discountAmount,
+                'totalDiscount' => (float) $discountAmount,
                 'strategy' => 'new-user',
             ];
         }
@@ -53,7 +53,7 @@ class DiscountStrategies
      * @param string $userEmail
      * @param Money  $subtotal
      *
-     * @return array{applicable: bool, totalDiscount: string, strategy: string} | false
+     * @return array{applicable: bool, totalDiscount: float, strategy: string} | false
      *
      * @throws Exception
      */
@@ -68,7 +68,7 @@ class DiscountStrategies
 
             return [
                 'applicable' => true,
-                'totalDiscount' => $discountAmount,
+                'totalDiscount' => (float) $discountAmount,
                 'strategy' => 'employee',
             ];
         }
@@ -81,7 +81,7 @@ class DiscountStrategies
      *
      * @param Money $subtotal
      *
-     * @return array{applicable: bool, totalDiscount: string, strategy: string} | false
+     * @return array{applicable: bool, totalDiscount: float, strategy: string} | false
      */
     public function aboveThreeThousand(Money $subtotal): array|false
     {
@@ -94,7 +94,7 @@ class DiscountStrategies
 
             return [
                 'applicable' => true,
-                'totalDiscount' => $discountAmount,
+                'totalDiscount' => (float) $discountAmount,
                 'strategy' => 'above-3000',
             ];
         }
@@ -109,9 +109,9 @@ class DiscountStrategies
      * e.g: If the user pick two that are in promotion
      * the third will be free.
      *
-     * @param array<int, array{id: string, categoryId: string, quantity: int, unitPrice: numeric-string} $products
+     * @param array<int, array{id: string, categoryId: string, quantity: int, unitPrice: numeric-string}> $products
      *
-     * @return array{applicable: bool, totalDiscount: string, strategy: string} | false
+     * @return array{applicable: bool, totalDiscount: float, strategy: string} | false
      */
     public function takeThreePayTwo(array $products): array|false
     {
@@ -140,7 +140,7 @@ class DiscountStrategies
         if ($totalDiscount) {
             return [
                 'applicable' => true,
-                'totalDiscount' => $totalDiscount,
+                'totalDiscount' => (float) $totalDiscount,
                 'strategy' => 'take-3-pay-2',
             ];
         }
@@ -152,9 +152,9 @@ class DiscountStrategies
      * Consists in a 40% discount on a unit of the cheapest product
      * in the cart that has two products of the same category.
      *
-     * @param array<int, array{id: string, categoryId: string, quantity: int, unitPrice: numeric-string} $products
+     * @param array<int, array{id: string, categoryId: string, quantity: int, unitPrice: numeric-string}> $products
      *
-     * @return array{applicable: bool, totalDiscount: string, strategy: string} | false
+     * @return array{applicable: bool, totalDiscount: float, strategy: string} | false
      */
     public function sameCategory(array $products): array | false
     {
@@ -189,7 +189,7 @@ class DiscountStrategies
         if ($totalDiscount) {
             return [
                 'applicable' => true,
-                'totalDiscount' => $totalDiscount,
+                'totalDiscount' => (float) $totalDiscount,
                 'strategy' => 'same-category',
             ];
         }

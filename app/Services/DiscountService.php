@@ -24,11 +24,11 @@ class DiscountService
     /**
      * Get all available discounts for a given cart.
      *
-     * @param string                                                                                   $userEmail
-     * @param Money                                                                                    $subtotal
-     * @param array<int, array{id: int, categoryId: string, quantity: int, unitPrice: numeric-string}> $products
+     * @param string                                                                                      $userEmail
+     * @param Money                                                                                       $subtotal
+     * @param array<int, array{id: string, categoryId: string, quantity: int, unitPrice: numeric-string}> $products
      *
-     * @return array<int, array<string, bool>>
+     * @return array<int, array<string, bool|float|string>>
      *
      * @throws Exception
      */
@@ -48,9 +48,9 @@ class DiscountService
     /**
      * Determines the biggest discount on a given discount list.
      *
-     * @param array $availableDiscounts
+     * @param array<int, array<string, bool|float|string>> $availableDiscounts
      *
-     * @return array{applicable: bool, totalDiscount: float, strategy: string}
+     * @return array<string, bool|float|string>
      */
     public function determineBigger(array $availableDiscounts): array
     {
@@ -75,17 +75,17 @@ class DiscountService
     /**
      * Format a string discount value to float, acceptable in Money Package.
      *
-     * @param string $value
+     * @param float $value
      *
      * @return float
      */
-    public function formatDiscountValue(string $value): float
+    public function formatDiscountValue(float $value): float
     {
         $decimals = 2;
         $decimalSeparator = '.';
         $thousandsSeparator = '';
 
-        return number_format(
+        return (float) number_format(
             floor($value * 100) / 100,
             $decimals,
             $decimalSeparator,

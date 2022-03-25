@@ -62,25 +62,28 @@ class UsersController extends Controller
         /** @var array{message: string, data: array<string, bool>} $parsedResponse */
         $parsedResponse = json_decode($response, true);
 
-        return match ($statusCode) {
-            200 => [
-                'message' => self::SUCCESS_MESSAGE,
-                'data' => $parsedResponse['data'],
-            ],
-            404 => [
-                'message' => self::USER_NOT_FOUND_MESSAGE,
-                'data' => [
-                    'email' => $userEmail,
-                    'isEmployee' => false,
-                ],
-            ],
-            default => [
-                'message' => self::INTERNAL_ERROR_MESSAGE,
-                'data' => [
-                    'email' => $userEmail,
-                    'isEmployee' => false,
-                ],
-            ],
-        };
+        switch ($statusCode) {
+            case 200:
+                return [
+                    'message' => self::SUCCESS_MESSAGE,
+                    'data' => $parsedResponse['data'],
+                ];
+            case 404:
+                return [
+                    'message' => self::USER_NOT_FOUND_MESSAGE,
+                    'data' => [
+                        'email' => $userEmail,
+                        'isEmployee' => false,
+                    ],
+                ];
+            default:
+                return [
+                    'message' => self::INTERNAL_ERROR_MESSAGE,
+                    'data' => [
+                        'email' => $userEmail,
+                        'isEmployee' => false,
+                    ],
+                ];
+        }
     }
 }

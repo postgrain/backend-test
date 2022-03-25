@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class DiscountStrategiesTest extends TestCase
 {
-    public function testShouldAboveThreeThousandDiscountBeApplicable()
+    public function testShouldAboveThreeThousandDiscountBeApplicable(): void
     {
         //set
         $subtotalAmount = '3100.00';
@@ -17,6 +17,7 @@ class DiscountStrategiesTest extends TestCase
         $response = [];
 
         //act
+        /** @phpstan-ignore-next-line */
         if ((float) $subtotalAmount > (float) $minSubtotalAmount) {
             $discountAmount = (float) $subtotalAmount * ($discountPercentage / 100);
             $response = [
@@ -39,7 +40,7 @@ class DiscountStrategiesTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testShouldNewUserDiscountBeApplicable()
+    public function testShouldNewUserDiscountBeApplicable(): void
     {
         //Set
         $userEmail = 'bringMeTheHorizon@gmail.com';
@@ -50,6 +51,7 @@ class DiscountStrategiesTest extends TestCase
         $response = [];
 
         //Act
+        /** @phpstan-ignore-next-line */
         if ($isNewUser && (float) $subtotal > (float) $minSubtotal) {
             $response = [
                 'applicable' => true,
@@ -68,7 +70,7 @@ class DiscountStrategiesTest extends TestCase
         $this->assertEquals($expected, $response);
     }
 
-    public function testShouldTakeThreePayTwoDiscountBeApplicable()
+    public function testShouldTakeThreePayTwoDiscountBeApplicable(): void
     {
         //Set
         /** @var array<int, string> $promotionalProducts */
@@ -98,6 +100,7 @@ class DiscountStrategiesTest extends TestCase
             $qntFreeProducts = 0;
 
             foreach ($promotionalProducts as $promoProductId) {
+                /** @phpstan-ignore-next-line */
                 if ($productId == $promoProductId && $qntProducts >= 3) {
                     $qntFreeProducts = $qntProducts / 3;
 
@@ -131,7 +134,7 @@ class DiscountStrategiesTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testShouldEmployeeDiscountBeApplicable()
+    public function testShouldEmployeeDiscountBeApplicable(): void
     {
         //Set
         $userEmail = 'boitata@boitata.com';
@@ -160,7 +163,7 @@ class DiscountStrategiesTest extends TestCase
         $this->assertEquals($expected, $response);
     }
 
-    public function testShouldSameCategoryDiscountBeApplicable()
+    public function testShouldSameCategoryDiscountBeApplicable(): void
     {
         //Set
         /** @var array<string> $promotionalCategories */
@@ -214,6 +217,7 @@ class DiscountStrategiesTest extends TestCase
         }
 
 
+        /** @phpstan-ignore-next-line */
         if ($totalDiscount) {
             $response = [
                 'applicable' => true,
