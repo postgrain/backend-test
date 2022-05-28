@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Money\Money;
 use Money\Currency;
 use Tests\TestCase;
 use Money\Currencies\ISOCurrencies;
@@ -17,6 +18,30 @@ class CartServiceTest extends TestCase
 
         // Assertions
         $this->assertTrue($cartService instanceof CartService);
+    }
+
+    public function testShouldCalculateCartSubtotal(): void
+    {
+        // Set
+        /** @var array<int, array<string, numeric-string>> $products */
+        $products = [
+            [
+                'unitPrice' => '30.0',
+                'quantity' => 2,
+            ],
+            [
+                'unitPrice' => '20.0',
+                'quantity' => 3,
+            ],
+        ];
+
+        $cartService = new CartService($products);
+
+        // Action
+        $subtotal = $cartService->calculateSubtotal();
+
+        // Assertions
+        $this->assertEquals(Money::BRL(12000), $subtotal);
     }
 
     private function createCartServiceInstance(): CartService
