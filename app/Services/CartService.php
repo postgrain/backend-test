@@ -32,6 +32,11 @@ class CartService
      */
     protected $moneyFormatter;
 
+    /**
+     * @var Money $subtotal
+     */
+    protected $subtotal;
+
     /** @param array<int, array<string, numeric-string>> $products */
     public function __construct(
         array $products = [],
@@ -45,9 +50,21 @@ class CartService
         $this->currency = $currency ?? new Currency('BRL');
         $this->moneyParser = $moneyParser ?? new DecimalMoneyParser($currencies);
         $this->moneyFormatter = $moneyFormatter ?? new DecimalMoneyFormatter($currencies);
+
+        $this->subtotal = $this->calculateSubtotal();
     }
 
     public function getSubtotal(): Money
+    {
+        return $this->subtotal;
+    }
+
+    public function setSubtotal(Money $value): void
+    {
+        $this->subtotal = $value;
+    }
+
+    public function calculateSubtotal(): Money
     {
         return array_reduce($this->products, function ($acc, array $product) {
             /** @var string $price */
