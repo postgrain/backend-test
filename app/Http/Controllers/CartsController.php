@@ -21,8 +21,6 @@ class CartsController extends Controller
         // You can do whatever you want with this code, even delete it.
         // Think about responsibilities, testing and code clarity.
 
-        $subtotal = Money::BRL(0);
-
         /** @var array<int, array<string, numeric-string>> $products */
         $products = $request->get('products');
 
@@ -30,19 +28,13 @@ class CartsController extends Controller
 
         $cartService = new CartService($products, $currency, $moneyParser, $moneyFormatter);
 
-        $subtotal = $cartService->getSubtotal();
-
-        $discount = Money::BRL(0);
-
-        $total = $subtotal->subtract($discount);
-
         return new JsonResponse(
             [
                 'message' => 'Success.',
                 'data' => [
-                    'subtotal' => $moneyFormatter->format($subtotal),
-                    'discount' => $moneyFormatter->format($discount),
-                    'total' => $moneyFormatter->format($total),
+                    'subtotal' => $moneyFormatter->format($cartService->getSubtotal()),
+                    'discount' => $moneyFormatter->format($cartService->getDiscount()),
+                    'total' => $moneyFormatter->format($cartService->getTotal()),
                     'strategy' => 'none',
                 ],
             ]

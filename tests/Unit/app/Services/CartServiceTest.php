@@ -44,6 +44,20 @@ class CartServiceTest extends TestCase
         $this->assertEquals(Money::BRL(12000), $subtotal);
     }
 
+    public function testShouldCalculateCartTotal(): void
+    {
+        // Set
+        $cartService = new CartService();
+        $cartService->setSubtotal(Money::BRL(30000));
+        $cartService->setDiscount(Money::BRL(10000));
+
+        // Action
+        $total = $cartService->getTotal();
+
+        // Assertions
+        $this->assertEquals(Money::BRL(20000), $total);
+    }
+
     private function createCartServiceInstance(): CartService
     {
         $products = [];
