@@ -6,7 +6,6 @@ use App\Http\Requests\CartDiscountRequest;
 use App\Services\CartService;
 use Illuminate\Http\JsonResponse;
 use Money\Currency;
-use Money\Money;
 use Money\MoneyFormatter;
 use Money\MoneyParser;
 
