@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CartDiscountRequest;
+use App\Services\CartService;
 use Illuminate\Http\JsonResponse;
 use Money\Currency;
 use Money\Money;
@@ -25,12 +26,11 @@ class CartsController extends Controller
         /** @var array<int, array<string, numeric-string>> $products */
         $products = $request->get('products');
 
-        foreach ($products as $product) {
-            $currency = new Currency('BRL');
-            $unitPrice = $moneyParser->parse($product['unitPrice'], $currency);
-            $amount = $unitPrice->multiply($product['quantity']);
-            $subtotal = $subtotal->add($amount);
-        }
+        $currency = new Currency('BRL');
+
+        $cartService = new CartService($products, $currency, $moneyParser, $moneyFormatter);
+
+        $subtotal = $cartService->getSubtotal();
 
         $discount = Money::BRL(0);
 
