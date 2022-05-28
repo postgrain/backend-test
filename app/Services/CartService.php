@@ -6,6 +6,9 @@ use Money\Money;
 use Money\Currency;
 use Money\MoneyParser;
 use Money\MoneyFormatter;
+use Money\Currencies\ISOCurrencies;
+use Money\Parser\DecimalMoneyParser;
+use Money\Formatter\DecimalMoneyFormatter;
 
 class CartService
 {
@@ -31,15 +34,17 @@ class CartService
 
     /** @param array<int, array<string, numeric-string>> $products */
     public function __construct(
-        array $products,
-        Currency $currency,
-        MoneyParser $moneyParser,
-        MoneyFormatter $moneyFormatter
+        array $products = [],
+        ?Currency $currency = null,
+        ?MoneyParser $moneyParser = null,
+        ?MoneyFormatter $moneyFormatter = null
     ) {
+        $currencies = new ISOCurrencies();
+
         $this->products = $products;
-        $this->currency = $currency;
-        $this->moneyParser = $moneyParser;
-        $this->moneyFormatter = $moneyFormatter;
+        $this->currency = $currency ?? new Currency('BRL');
+        $this->moneyParser = $moneyParser ?? new DecimalMoneyParser($currencies);
+        $this->moneyFormatter = $moneyFormatter ?? new DecimalMoneyFormatter($currencies);
     }
 
     public function getSubtotal(): Money
