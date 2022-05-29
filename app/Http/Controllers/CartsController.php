@@ -32,9 +32,9 @@ class CartsController extends Controller
                 'message' => 'Success.',
                 'data' => [
                     'subtotal' => $moneyFormatter->format($cartService->getSubtotal()),
-                    'discount' => $moneyFormatter->format($cartService->getDiscount()),
+                    'discount' => $moneyFormatter->format($cartService->getDiscount()['total']),
                     'total' => $moneyFormatter->format($cartService->getTotal()),
-                    'strategy' => 'none',
+                    'strategy' => $cartService->getDiscount()['strategy'],
                 ],
             ]
         );

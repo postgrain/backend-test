@@ -38,7 +38,7 @@ class CartService
     protected $subtotal;
 
     /**
-     * @var Money $discount
+     * @var array{total: Money, strategy: string} $discount
      */
     protected $discount;
 
@@ -70,19 +70,23 @@ class CartService
         $this->subtotal = $value;
     }
 
-    public function getDiscount(): Money
+    /** @return array{total: Money, strategy: string} */
+    public function getDiscount(): array
     {
         return $this->discount;
     }
 
-    public function setDiscount(Money $value): void
+    public function setDiscount(Money $value, string $strategy): void
     {
-        $this->discount = $value;
+        $this->discount = [
+            'total' => $value,
+            'strategy' => $strategy,
+        ];
     }
 
     public function getTotal(): Money
     {
-        return $this->subtotal->subtract($this->discount);
+        return $this->subtotal->subtract($this->discount['total']);
     }
 
     public function calculateSubtotal(): Money
@@ -102,8 +106,65 @@ class CartService
         }, Money::BRL(0));
     }
 
-    public function calculateDiscount(): Money
+    /** @return array{total: Money, strategy: string} */
+    public function calculateDiscount(): array
     {
-        return Money::BRL(0);
+        $elegibleDiscounts = $this->getAllElegibleDiscounts();
+
+        if (!count($elegibleDiscounts)) {
+            return [
+                'strategy' => 'none',
+                'total' => Money::BRL(0),
+            ];
+        }
+
+        return $this->getHighestDiscount($elegibleDiscounts);
+    }
+
+    /** @return array{}|array{array{total: Money, strategy: string}} */
+    private function getAllElegibleDiscounts(): array
+    {
+        $calculatedDiscounts = [];
+
+        $activeDiscounts = [
+            $this->calculateDiscountAbove3000(),
+        ];
+
+        foreach ($activeDiscounts as $activeDiscount) {
+            array_push($calculatedDiscounts, $activeDiscount);
+        }
+
+        return array_filter($calculatedDiscounts, function ($item) {
+            return $item['elegible'];
+        });
+    }
+
+    /**
+     * @param array{array{total: Money, strategy: string}} $discounts
+     *
+     * @return array{total: Money, strategy: string}
+     */
+    private function getHighestDiscount(array $discounts): array
+    {
+        return array_reduce($discounts, function ($carry, $item) {
+            return @$carry['total'] > $item['total'] ? $carry : $item;
+        });
+    }
+
+    /** @return array{total: Money, strategy: string, elegible: bool} */
+    private function calculateDiscountAbove3000(): array
+    {
+        $discount = [
+            'strategy' => 'above-3000',
+            'total' => Money::BRL(0),
+            'elegible' => false,
+        ];
+
+        if ($this->subtotal->greaterThanOrEqual(Money::BRL(300000))) {
+            $discount['elegible'] = true;
+            $discount['total'] = $this->subtotal->multiply(15)->divide(100);
+        }
+
+        return $discount;
     }
 }

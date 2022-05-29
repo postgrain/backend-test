@@ -49,7 +49,7 @@ class CartServiceTest extends TestCase
         // Set
         $cartService = new CartService();
         $cartService->setSubtotal(Money::BRL(30000));
-        $cartService->setDiscount(Money::BRL(10000));
+        $cartService->setDiscount(Money::BRL(10000), 'none');
 
         // Action
         $total = $cartService->getTotal();
