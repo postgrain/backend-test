@@ -128,6 +128,7 @@ class CartService
 
         $activeDiscounts = [
             $this->calculateDiscountAbove3000(),
+            $this->calculateDiscountTake3Pay2(),
         ];
 
         foreach ($activeDiscounts as $activeDiscount) {
@@ -164,6 +165,48 @@ class CartService
             $discount['elegible'] = true;
             $discount['total'] = $this->subtotal->multiply(15)->divide(100);
         }
+
+        return $discount;
+    }
+
+    /** @return array{total: Money, strategy: string, elegible: bool} */
+    private function calculateDiscountTake3Pay2(): array
+    {
+        $discount = [
+            'strategy' => 'take-3-pay-2',
+            'total' => Money::BRL(0),
+            'elegible' => false,
+        ];
+
+        /** @var array<string> $eligibleProducts */
+        $eligibleProducts = config('api.promotional.products');
+
+        $filteredProducts = array_filter($this->products, function ($item) use ($eligibleProducts) {
+            return in_array(@$item['id'], $eligibleProducts)
+                && $item['quantity'] >= 3;
+        });
+
+        if (!count($filteredProducts)) {
+            return $discount;
+        }
+
+        $total = Money::BRL(0);
+        $currency = new Currency('BRL');
+
+        foreach ($filteredProducts as $product) {
+            /** @var int $quantity */
+            $quantity = $product['quantity'];
+
+            /** @var string $price */
+            $price = $product['unitPrice'];
+
+            $freeProducts = intdiv($quantity, 3);
+            $unitPrice = $this->moneyParser->parse($price, $currency);
+            $total = $total->add($unitPrice->multiply($freeProducts));
+        }
+
+        $discount['total'] = $discount['total']->add($total);
+        $discount['elegible'] = true;
 
         return $discount;
     }
