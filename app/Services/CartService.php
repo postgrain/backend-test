@@ -129,6 +129,7 @@ class CartService
         $activeDiscounts = [
             $this->calculateDiscountAbove3000(),
             $this->calculateDiscountTake3Pay2(),
+            $this->calculateDiscountSameCategory(),
         ];
 
         foreach ($activeDiscounts as $activeDiscount) {
@@ -207,6 +208,41 @@ class CartService
 
         $discount['total'] = $discount['total']->add($total);
         $discount['elegible'] = true;
+
+        return $discount;
+    }
+
+    /** @return array{total: Money, strategy: string, elegible: bool} */
+    private function calculateDiscountSameCategory(): array
+    {
+        $discount = [
+            'strategy' => 'same-category',
+            'total' => Money::BRL(0),
+            'elegible' => false,
+        ];
+
+        $total = Money::BRL(0);
+        $currency = new Currency('BRL');
+
+        /** @var array<string> $eligibleCategories */
+        $eligibleCategories = config('api.promotional.categories');
+
+        foreach ($eligibleCategories as $eligibleCategory) {
+            $products = [];
+
+            $products = array_filter($this->products, function ($item) use ($eligibleCategory) {
+                return @$item['categoryId'] === $eligibleCategory;
+            });
+
+            if (count($products) >= 2) {
+                /** @var string $lowestPrice */
+                $lowestPrice = min(array_column($products, 'unitPrice'));
+                $lowestPrice = $this->moneyParser->parse($lowestPrice, $currency);
+                $lowestPriceDiscount = $lowestPrice->multiply(40)->divide(100);
+                $discount['total'] = $total->add($lowestPriceDiscount);
+                $discount['elegible'] = true;
+            }
+        }
 
         return $discount;
     }
