@@ -133,6 +133,7 @@ class CartService
             $this->calculateDiscountAbove3000(),
             $this->calculateDiscountTake3Pay2(),
             $this->calculateDiscountSameCategory(),
+            $this->calculateDiscountEmployee(),
             $this->calculateDiscountNewUser(),
         ];
 
@@ -246,6 +247,23 @@ class CartService
                 $discount['total'] = $total->add($lowestPriceDiscount);
                 $discount['elegible'] = true;
             }
+        }
+
+        return $discount;
+    }
+
+    /** @return array{total: Money, strategy: string, elegible: bool} */
+    private function calculateDiscountEmployee(): array
+    {
+        $discount = [
+            'strategy' => 'employee',
+            'total' => Money::BRL(0),
+            'elegible' => false,
+        ];
+
+        if (!is_null($this->user) && array_key_exists('isEmployee', $this->user) && $this->user['isEmployee']) {
+            $discount['elegible'] = true;
+            $discount['total'] = $this->subtotal->multiply(20)->divide(100);
         }
 
         return $discount;
