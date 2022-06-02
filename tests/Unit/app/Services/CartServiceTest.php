@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace Tests\Unit\App\Services;
 
 use Money\Money;
-use Money\Currency;
 use Tests\TestCase;
+use App\Services\CartService;
 use Money\Currencies\ISOCurrencies;
 use Money\Parser\DecimalMoneyParser;
 use Money\Formatter\DecimalMoneyFormatter;
@@ -35,7 +35,7 @@ class CartServiceTest extends TestCase
             ],
         ];
 
-        $cartService = new CartService($products);
+        $cartService = $this->createCartServiceInstance($products);
 
         // Action
         $subtotal = $cartService->calculateSubtotal();
@@ -47,7 +47,7 @@ class CartServiceTest extends TestCase
     public function testShouldCalculateCartTotal(): void
     {
         // Set
-        $cartService = new CartService();
+        $cartService = $this->createCartServiceInstance();
         $cartService->setSubtotal(Money::BRL(30000));
         $cartService->setDiscount(Money::BRL(10000), 'none');
 
@@ -58,14 +58,15 @@ class CartServiceTest extends TestCase
         $this->assertEquals(Money::BRL(20000), $total);
     }
 
-    private function createCartServiceInstance(): CartService
+    /**
+     * @param array<int, array<string, numeric-string>> $products
+     */
+    private function createCartServiceInstance(array $products = [], string $email = ''): CartService
     {
-        $products = [];
-        $currency = new Currency('BRL');
         $currencies = new ISOCurrencies();
         $moneyParser = new DecimalMoneyParser($currencies);
         $moneyFormatter = new DecimalMoneyFormatter($currencies);
 
-        return new CartService($products, $currency, $moneyParser, $moneyFormatter);
+        return new CartService($email, $products, $moneyParser, $moneyFormatter);
     }
 }

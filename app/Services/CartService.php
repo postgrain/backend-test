@@ -6,9 +6,8 @@ use Money\Money;
 use Money\Currency;
 use Money\MoneyParser;
 use Money\MoneyFormatter;
-use Money\Currencies\ISOCurrencies;
-use Money\Parser\DecimalMoneyParser;
-use Money\Formatter\DecimalMoneyFormatter;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Http;
 
 class CartService
 {
@@ -16,6 +15,11 @@ class CartService
      * @var array<int, array<string, numeric-string>> $products
      */
     protected $products;
+
+    /**
+     * @var array{email: string, isEmployee: bool}|null $user
+     */
+    protected $user;
 
     /**
      * @var Currency $currency
@@ -44,18 +48,17 @@ class CartService
 
     /** @param array<int, array<string, numeric-string>> $products */
     public function __construct(
-        array $products = [],
-        ?Currency $currency = null,
-        ?MoneyParser $moneyParser = null,
-        ?MoneyFormatter $moneyFormatter = null
+        string $email,
+        array $products,
+        MoneyParser $moneyParser,
+        MoneyFormatter $moneyFormatter
     ) {
-        $currencies = new ISOCurrencies();
-
+        $this->user = $this->getUserInfo($email);
         $this->products = $products;
-        $this->currency = $currency ?? new Currency('BRL');
-        $this->moneyParser = $moneyParser ?? new DecimalMoneyParser($currencies);
-        $this->moneyFormatter = $moneyFormatter ?? new DecimalMoneyFormatter($currencies);
+        $this->moneyParser = $moneyParser;
+        $this->moneyFormatter = $moneyFormatter;
 
+        $this->currency = new Currency('BRL');
         $this->subtotal = $this->calculateSubtotal();
         $this->discount = $this->calculateDiscount();
     }
@@ -245,5 +248,20 @@ class CartService
         }
 
         return $discount;
+    }
+
+    /** @return array{email: string, isEmployee: bool} */
+    private function getUserInfo(string $email): ?array
+    {
+        $response = Http::get(URL::to("/api/v1/user/$email"));
+
+        if (404 === $response->status()) {
+            return null;
+        }
+
+        /** @var array{message: string, data: array{email: string, isEmployee: bool}} $data */
+        $data = $response->json();
+
+        return $data['data'];
     }
 }

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CartDiscountRequest;
+use Money\MoneyParser;
+use Money\MoneyFormatter;
 use App\Services\CartService;
 use Illuminate\Http\JsonResponse;
-use Money\Currency;
-use Money\MoneyFormatter;
-use Money\MoneyParser;
+use App\Http\Requests\CartDiscountRequest;
 
 class CartsController extends Controller
 {
@@ -16,16 +15,13 @@ class CartsController extends Controller
         MoneyParser $moneyParser,
         MoneyFormatter $moneyFormatter
     ): JsonResponse {
-        // Your logic goes here, use the code below just as a guidance.
-        // You can do whatever you want with this code, even delete it.
-        // Think about responsibilities, testing and code clarity.
-
         /** @var array<int, array<string, numeric-string>> $products */
         $products = $request->get('products');
 
-        $currency = new Currency('BRL');
+        /** @var string $email */
+        $email = $request->get('userEmail');
 
-        $cartService = new CartService($products, $currency, $moneyParser, $moneyFormatter);
+        $cartService = new CartService($email, $products, $moneyParser, $moneyFormatter);
 
         return new JsonResponse(
             [
