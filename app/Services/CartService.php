@@ -133,6 +133,7 @@ class CartService
             $this->calculateDiscountAbove3000(),
             $this->calculateDiscountTake3Pay2(),
             $this->calculateDiscountSameCategory(),
+            $this->calculateDiscountNewUser(),
         ];
 
         foreach ($activeDiscounts as $activeDiscount) {
@@ -245,6 +246,23 @@ class CartService
                 $discount['total'] = $total->add($lowestPriceDiscount);
                 $discount['elegible'] = true;
             }
+        }
+
+        return $discount;
+    }
+
+    /** @return array{total: Money, strategy: string, elegible: bool} */
+    private function calculateDiscountNewUser(): array
+    {
+        $discount = [
+            'strategy' => 'new-user',
+            'total' => Money::BRL(0),
+            'elegible' => false,
+        ];
+
+        if (is_null($this->user) && $this->subtotal->greaterThanOrEqual(Money::BRL(5000))) {
+            $discount['elegible'] = true;
+            $discount['total'] = Money::BRL(2500);
         }
 
         return $discount;
