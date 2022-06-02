@@ -227,7 +227,6 @@ class CartService
         ];
 
         $total = Money::BRL(0);
-        $currency = new Currency('BRL');
 
         /** @var array<string> $eligibleCategories */
         $eligibleCategories = config('api.promotional.categories');
@@ -242,8 +241,8 @@ class CartService
             if (count($products) >= 2) {
                 /** @var string $lowestPrice */
                 $lowestPrice = min(array_column($products, 'unitPrice'));
-                $lowestPrice = $this->moneyParser->parse($lowestPrice, $currency);
-                $lowestPriceDiscount = $lowestPrice->multiply(40)->divide(100);
+                $lowestPrice = $this->moneyParser->parse($lowestPrice, $this->currency);
+                $lowestPriceDiscount = $lowestPrice->multiply(40)->divide(100, Money::ROUND_DOWN);
                 $discount['total'] = $total->add($lowestPriceDiscount);
                 $discount['elegible'] = true;
             }
