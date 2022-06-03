@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 
 class UserService
@@ -9,15 +10,19 @@ class UserService
     /** @return array{email: string, isEmployee: bool} */
     public function getUser(string $email): ?array
     {
-        $response = Http::get(route('api.v1.users.email', ['email' => $email]));
+        try {
+            $response = Http::get(route('api.v1.users.email', ['email' => $email]));
 
-        if (200 != $response->status()) {
+            if (!$response->successful()) {
+                $response->throw();
+            }
+
+            /** @var array{message: string, data: array{email: string, isEmployee: bool}} $data */
+            $data = $response->json();
+
+            return $data['data'];
+        } catch (Exception $e) {
             return null;
         }
-
-        /** @var array{message: string, data: array{email: string, isEmployee: bool}} $data */
-        $data = $response->json();
-
-        return $data['data'];
     }
 }
