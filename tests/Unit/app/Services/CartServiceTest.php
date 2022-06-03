@@ -47,26 +47,36 @@ class CartServiceTest extends TestCase
     public function testShouldCalculateCartTotal(): void
     {
         // Set
-        $cartService = $this->createCartServiceInstance();
-        $cartService->setSubtotal(Money::BRL(30000));
-        $cartService->setDiscount(Money::BRL(10000), 'none');
+        // Set
+        /** @var array<int, array<string, numeric-string>> $products */
+        $products = [
+            [
+                'unitPrice' => '30.0',
+                'quantity' => 2,
+            ],
+            [
+                'unitPrice' => '20.0',
+                'quantity' => 3,
+            ],
+        ];
+        $cartService = $this->createCartServiceInstance($products);
 
         // Action
         $total = $cartService->getTotal();
 
         // Assertions
-        $this->assertEquals(Money::BRL(20000), $total);
+        $this->assertEquals(Money::BRL(9500), $total);
     }
 
     /**
      * @param array<int, array<string, numeric-string>> $products
      */
-    private function createCartServiceInstance(array $products = [], string $email = ''): CartService
+    private function createCartServiceInstance(array $products = []): CartService
     {
         $currencies = new ISOCurrencies();
         $moneyParser = new DecimalMoneyParser($currencies);
         $moneyFormatter = new DecimalMoneyFormatter($currencies);
 
-        return new CartService($email, $products, $moneyParser, $moneyFormatter);
+        return new CartService($products, $moneyParser, $moneyFormatter);
     }
 }
