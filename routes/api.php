@@ -10,6 +10,7 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartsController;
 use App\Http\Controllers\UsersController;
@@ -27,6 +28,7 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::group(['prefix' => 'user'], function () {
-        Route::get('{email}', [UsersController::class, 'information']);
+        Route::get('{email}', [UsersController::class, 'information'])
+            ->name('api.v1.users.email');
     });
 });

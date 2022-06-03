@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Http;
 
 class UserService
@@ -10,7 +9,7 @@ class UserService
     /** @return array{email: string, isEmployee: bool} */
     public function getUser(string $email): ?array
     {
-        $response = Http::get(URL::to("/api/v1/user/$email"));
+        $response = Http::get(route('api.v1.users.email', ['email' => $email]));
 
         if (404 === $response->status()) {
             return null;
