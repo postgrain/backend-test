@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\Http;
 
 class UserService
 {
+    protected const BASE_URL = 'http://localhost:8000';
+
     /** @return array{email: string, isEmployee: bool} */
     public function getUser(string $email): ?array
     {
         try {
-            $response = Http::get(route('api.v1.users.email', ['email' => $email]));
+            $response = Http::get(self::BASE_URL . "/api/v1/user/$email");
 
             if (!$response->successful()) {
                 $response->throw();
