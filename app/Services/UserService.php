@@ -11,7 +11,7 @@ class UserService
     {
         $response = Http::get(route('api.v1.users.email', ['email' => $email]));
 
-        if (404 === $response->status()) {
+        if (200 != $response->status()) {
             return null;
         }
 
