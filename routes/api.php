@@ -28,7 +28,6 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::group(['prefix' => 'user'], function () {
-        Route::get('{email}', [UsersController::class, 'information'])
-            ->name('api.v1.users.email');
+        Route::get('{email}', [UsersController::class, 'information']);
     });
 });
