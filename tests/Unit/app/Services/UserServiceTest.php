@@ -2,8 +2,9 @@
 
 namespace Tests\Unit\App\Services;
 
-use App\Services\UserService;
 use Tests\TestCase;
+use App\Services\UserService;
+use Illuminate\Support\Facades\Http;
 
 class UserServiceTest extends TestCase
 {
@@ -12,6 +13,15 @@ class UserServiceTest extends TestCase
         // Set
         $userService = new UserService();
         $email = 'johndoe@pm.me';
+        Http::fake([
+            "http://localhost:8000/api/v1/user/$email" => Http::response([
+                'message' => 'Success.',
+                'data' => [
+                    'email' => $email,
+                    'isEmployee' => false,
+                ],
+            ], 200),
+        ]);
 
         // Actions
         $user = $userService->getUser($email);

@@ -2,8 +2,9 @@
 
 namespace Tests\Feature\API\V1\Cart;
 
-use Tests\TestCase;
 use Generator;
+use Tests\TestCase;
+use Illuminate\Support\Facades\Http;
 
 /**
  * /cart/discount
@@ -20,6 +21,12 @@ class CartDiscountTest extends TestCase
     public function testCartDiscountRoute(array $data, int $statusCode, array $responseBody): void
     {
         // Actions
+        if (array_key_exists('userEmail', $data)) {
+            /** @var string $email */
+            $email = $data['userEmail'];
+            $this->setFakeApiResponse($email);
+        }
+
         $response = $this->postJson('/api/v1/cart/discount', $data);
         $content = json_decode((string) $response->getContent(), true);
 
@@ -77,6 +84,31 @@ class CartDiscountTest extends TestCase
                 'statusCode' => $fixtureArray['response']['statusCode'],
                 'responseBody' => $fixtureArray['response']['body'],
             ],
+        ];
+    }
+
+    private function setFakeApiResponse(string $email): void
+    {
+        $data = $this->getMockApiResponse($email);
+
+        Http::fake([
+            "http://localhost:8000/api/v1/user/$email" => Http::response($data['data'], $data['status']),
+        ]);
+    }
+
+    /**
+     * @return array{status: int, data: array<string, string|array<string, string>>}
+     */
+    private function getMockApiResponse(string $email): array
+    {
+        $response = $this->getJson("/api/v1/user/{$email}");
+
+        /** @var array<string, string|array<string, string>> $data */
+        $data = $response->json();
+
+        return [
+            'status' => $response->status(),
+            'data' => $data,
         ];
     }
 }
