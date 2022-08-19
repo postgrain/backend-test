@@ -16,9 +16,6 @@ class CartsController extends Controller
         MoneyParser $moneyParser,
         MoneyFormatter $moneyFormatter
     ): JsonResponse {
-        // Your logic goes here, use the code below just as a guidance.
-        // You can do whatever you want with this code, even delete it.
-        // Think about responsibilities, testing and code clarity.
 
         $subtotal = Money::BRL(0);
 
