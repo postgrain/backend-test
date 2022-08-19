@@ -8,18 +8,16 @@ use Money\Currency;
 use Money\Money;
 use Money\MoneyFormatter;
 use Money\MoneyParser;
+use App\Services\Cart\DiscountCartService;
 
 class CartsController extends Controller
 {
     public function calculateDiscount(
         CartDiscountRequest $request,
         MoneyParser $moneyParser,
-        MoneyFormatter $moneyFormatter
+        MoneyFormatter $moneyFormatter,
+        DiscountCartService $discountCartService
     ): JsonResponse {
-        // Your logic goes here, use the code below just as a guidance.
-        // You can do whatever you want with this code, even delete it.
-        // Think about responsibilities, testing and code clarity.
-
         $subtotal = Money::BRL(0);
 
         /** @var array<int, array<string, numeric-string>> $products */
@@ -31,19 +29,24 @@ class CartsController extends Controller
             $amount = $unitPrice->multiply($product['quantity']);
             $subtotal = $subtotal->add($amount);
         }
-
-        $discount = Money::BRL(0);
-
-        $total = $subtotal->subtract($discount);
+        /** @var array<array<string, array<string, numeric-string>>> $requestValidated */
+        $requestValidated = $request->validated();
+        $discount = $discountCartService($requestValidated, $subtotal);
+        $discountValue = floor((float) $discount['value']) . substr(
+            str_replace((string) (floor((float) $discount['value'])), '', $discount['value']),
+            0,
+            2 + 1
+        );
+        $total = ($subtotal->getAmount() - floatval($discountValue) * 100) / 100;
 
         return new JsonResponse(
             [
                 'message' => 'Success.',
                 'data' => [
                     'subtotal' => $moneyFormatter->format($subtotal),
-                    'discount' => $moneyFormatter->format($discount),
-                    'total' => $moneyFormatter->format($total),
-                    'strategy' => 'none',
+                    'discount' => floatval($discountValue),
+                    'total' => floatval($total),
+                    'strategy' => $discount['name'],
                 ],
             ]
         );
